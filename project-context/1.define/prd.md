@@ -5,11 +5,11 @@
 This is the MVP Product Requirements Document for a greenfield capstone. It states what the MVP must do and how a test can tell that it did it. It does not select an application pattern, a runtime, or an agent roster. Those decisions belong to `@system.arch` in the SAD.
 
 **MRD:** `project-context/1.define/mrd.md`  
-**System description:** `project-context/1.define/system-description.md` is not present. Requirements are traced to the MRD, to the operator instruction for `*create-prd`, or to the operator decisions of 2026-11-14 that close the open questions below. Where the system description would have settled a test and the operator has not, the gap stays an Open Question.  
+**System description:** `project-context/1.define/system-description.md` is not present. Requirements are traced to the MRD, to the operator instruction for `*create-prd`, or to the operator decisions of 2026-11-14 and 2026-11-17 that close the open questions below. Where the system description would have settled a test and the operator has not, the gap stays an Open Question.  
 **System concept:** A mortgage customer submits one servicing question in natural language. The solution classifies it, retrieves from approved mock knowledge, drafts an answer with source references, and either delivers that answer directly or places the question and the draft on one human approval gate.  
 **Selected runtime:** Not selected in this PRD. Deferred to the SAD.
 
-**MVP boundary from the operator instruction of 2026-11-13:** one user-facing happy path, one human approval gate, every system of record mocked, acceptance criteria testable, no unsourced number used as a target. The operator decisions of 2026-11-14 set the customer-specific fact list, the fixture approval mark, the conflict rule, escalation of a notice of error, a qualified written request, or a request for information, the claim-in-article check, synthetic fixtures, the technical-issue notice, a model call for drafting, and the limits of 200 questions a day, under 5 seconds, and at most 20 cents per question.
+**MVP boundary from the operator instruction of 2026-11-13:** one user-facing happy path, one human approval gate, every system of record mocked, acceptance criteria testable, no unsourced number used as a target. The operator decisions of 2026-11-14 set the customer-specific fact list, the fixture approval mark, the conflict rule, escalation of a notice of error, a qualified written request, or a request for information, the claim-in-article check, synthetic fixtures, the technical-issue notice, a model call for drafting, and the limits of 200 questions a day, under 5 seconds, and at most 20 cents per question. The operator decisions of 2026-11-17 set that the representative who records approval is the sender, including in a later live operation, and that a 201st question in a day is processed the same as questions 1–200, with a log that the day exceeded 200.
 
 The one happy path is direct delivery of a supported answer to the mortgage customer. The one human approval gate is the representative’s review of an escalation. That gate is the same review the MRD already requires for the three escalation conditions. It is not an approval of a supported answer, and it is not a second gate after the representative reviews.
 
@@ -73,7 +73,7 @@ This section states constraints. It does not choose a pattern, a runtime, compon
 
 **Discovery constraints**
 
-`system-description.md` is absent. The rows below are taken from the MRD, from the operator instruction for this PRD, and from the operator decisions of 2026-11-14.
+`system-description.md` is absent. The rows below are taken from the MRD, from the operator instruction for this PRD, and from the operator decisions of 2026-11-14 and 2026-11-17.
 
 #### Must do
 
@@ -87,6 +87,7 @@ This section states constraints. It does not choose a pattern, a runtime, compon
 | MD-06 | Customer-specific facts | requirement | A question is customer-specific when the answer needs a fact about one borrower or one loan: loan number, borrower name, property address, balance, interest rate, payment amount, due date, last payment, escrow amount, payoff amount, or delinquency or account status. A general servicing question that an approved article answers can still be supported. |
 | MD-07 | Approved mark and conflict | requirement | An article is approved when the fixture marks it approved. A draft may cite only those articles. When two approved articles disagree on a fact the answer needs, the recorded reason is cannot be determined to be safe. |
 | MD-08 | Notice of error, qualified written request, or request for information | requirement | When the question itself is one of those three, the recorded reason is customer-specific loan information. A general question about what the term means can still be supported from an approved article. |
+| MD-09 | Sender after approval | requirement | The representative who records approval is the sender. After that approval, the customer receives that same draft and its source references. A separate sender role is out of scope, including in a later live operation. |
 
 #### Must not do
 
@@ -103,7 +104,7 @@ This section states constraints. It does not choose a pattern, a runtime, compon
 
 | ID | Item | Kind | Testable constraint |
 | --- | --- | --- | --- |
-| MC-01 | Latency, cost per question, and daily volume | requirement | One submitted question is one call and one transaction. The MVP supports 200 submitted questions in a day. Elapsed time from submit until the customer can see the supported answer, the waiting state, or the technical-issue notice is under 5 seconds. Representative review is outside that interval. The recorded model or provider cost of that question is at most 20 cents. |
+| MC-01 | Latency, cost per question, and daily volume | requirement | One submitted question is one call and one transaction. The MVP supports 200 submitted questions in a day as a planning number. A 201st submitted question in that day is processed the same as questions 1–200. The product logs that the day exceeded 200. Elapsed time from submit until the customer can see the supported answer, the waiting state, or the technical-issue notice is under 5 seconds. Representative review is outside that interval. The recorded model or provider cost of that question is at most 20 cents. |
 
 #### Must prove
 
@@ -113,7 +114,7 @@ This section states constraints. It does not choose a pattern, a runtime, compon
 | MP-02 | Source references | requirement | On direct delivery, every source reference resolves to an article the fixture marks approved. |
 | MP-03 | Claims match the cited article | requirement | Every factual claim in the draft about a fee, rate, account status, policy, or loan fact appears in a cited approved article. A claim of that kind that is absent from those articles makes the recorded set include unsupported, and the set does not contain supported. |
 
-Trace: MD-02, MD-03, MD-05, MN-01, MN-04, MN-05, and MP-02 trace to MRD Context and MRD §2. MD-01, MD-04, MN-02, and MN-03 trace to MRD Context plus the operator `*create-prd` instruction. MN-06 traces to MRD Claims We Will Not Make. MD-06, MD-07, MD-08, MC-01, and MP-03 trace to the operator decisions of 2026-11-14. The MRD had left those items open.
+Trace: MD-02, MD-03, MD-05, MN-01, MN-04, MN-05, and MP-02 trace to MRD Context and MRD §2. MD-01, MD-04, MN-02, and MN-03 trace to MRD Context plus the operator `*create-prd` instruction. MN-06 traces to MRD Claims We Will Not Make. MD-06, MD-07, MD-08, MC-01, and MP-03 trace to the operator decisions of 2026-11-14. MD-09 and the 201st-question rule in MC-01 trace to the operator decisions of 2026-11-17. The MRD had left those items open.
 
 **Runtime constraints**
 
@@ -135,7 +136,7 @@ Integration boundaries the product must honor, whatever runtime the SAD selects:
 | Knowledge articles, customer records, loan information | Invented fixtures local to the MVP. | A live store is out of scope. |
 | Model provider used to draft an answer | A call is allowed. It is not a system of record. | A requirement to draft without a model is out of scope. |
 | Authentication of a real customer or employee directory | Not required. The test distinguishes the customer role from the representative role. | Open if a later release adds real identity. |
-| Performance and scale targets | 200 submitted questions in a day. Under 5 seconds until the customer-visible automated result. At most 20 cents of model or provider cost per question. | Behavior above 200 questions in a day is unresolved. No concurrency number and no uptime number. |
+| Performance and scale targets | 200 submitted questions in a day as a planning number. A 201st question in that day is processed the same as questions 1–200, and the product logs that the day exceeded 200. Under 5 seconds until the customer-visible automated result. At most 20 cents of model or provider cost per question. | No concurrency number and no uptime number. |
 
 **Infrastructure Specifications**
 
@@ -231,7 +232,7 @@ Acceptance criteria:
 - The test fails if approval is recorded and the customer still has no answer.
 - Elapsed time from submit until the customer can see the waiting state is under 5 seconds. Representative review time is outside that interval. The recorded model or provider cost of that question is at most 20 cents. The product records that cost.
 - A second approval item, a second approver, or an approval step on a supported answer fails the test.
-- A separate sender role is not part of the MVP. Who may send in a future live operation remains an Open Question carried from the MRD.
+- The representative who records approval is the sender. After approval is recorded, the product delivers that same draft. A separate sender role is out of scope, including in a later live operation.
 
 **FR-08. Customer sees a non-answer state while the gate is open.**  
 Trace: MRD rule that an escalated response is not sent before review; operator requirement that acceptance criteria be testable. The wording of the waiting notice is not specified here. The technical-issue sentence is specified in FR-11.
@@ -247,7 +248,7 @@ Trace: MRD “What is mocked”; operator `*create-prd`.
 
 Acceptance criteria:
 
-- The knowledge articles, customer records, and loan information used by FR-01 through FR-11 are invented fixtures. They are not a servicing extract and do not use a real borrower’s name, loan number, or address.
+- The knowledge articles, customer records, and loan information used by FR-01 through FR-12 are invented fixtures. They are not a servicing extract and do not use a real borrower’s name, loan number, or address.
 - The workflow does not require a network call to a mortgage servicing platform, a CRM, Salesforce, Zendesk, or another system of record in order to pass. Drafting may call a model.
 - A question whose answer needs a fact on the MD-06 list still escalates when a mock loan record is in the data the product can search. The mock record is not a live loan lookup.
 
@@ -264,7 +265,7 @@ Acceptance criteria:
 - The fixture set includes one case in which the workflow cannot complete, used by FR-11.
 - The expected result is hidden from the product. The recorded set matches that hidden result.
 - Each completed-workflow fixture passes the matching criteria in FR-06 or FR-07.
-- One question per case is the smallest set that makes each outcome observable. The daily capacity of 200 submitted questions is MC-01. It is not this fixture count.
+- One question per case is the smallest set that makes each outcome observable. The daily volume of 200 submitted questions is the planning number in MC-01. It is not this fixture count. The FR-12 case is a recorded daily count of 200 plus one more submitted question. It may reuse the supported fixture from this set.
 
 **FR-11. Technical failure.**  
 Trace: operator decision of 2026-11-14.
@@ -276,6 +277,18 @@ Acceptance criteria:
 - The draft is not shown as the answer. No approval item is created.
 - Elapsed time from submit until the customer can see that sentence is under 5 seconds. The recorded model or provider cost of that question, when a model was called, is at most 20 cents.
 
+**FR-12. A 201st question in a day still completes the workflow.**  
+Trace: operator decision of 2026-11-17.
+
+Acceptance criteria:
+
+- Given the recorded submitted-question count for that calendar day is already 200, when one more question is submitted, then the workflow proceeds under FR-06, FR-07, or FR-11 as it would for questions 1–200.
+- The product logs that the day exceeded 200. The log identifies the question and does not contain a secret value.
+- The customer does not see a capacity refusal. FR-11 is not used because the day exceeded 200.
+- Elapsed time and recorded model or provider cost still meet MC-01.
+- The test may set the recorded daily count to 200. It does not have to submit 200 questions first.
+- One such question is the smallest set that makes this outcome observable.
+
 **Enhanced Features (Priority P1)**
 
 None. The operator limited this PRD to the MVP.
@@ -284,7 +297,6 @@ None. The operator limited this PRD to the MVP.
 
 - A live mortgage servicing platform, CRM, Salesforce, or Zendesk connection.
 - A real customer or employee identity system.
-- A separate person who sends the response after the representative approves it.
 - Regulation X notice clocks.
 - An uptime number, a concurrency number, a readability score, or an accuracy percentage.
 - A second customer channel or a second happy path.
@@ -296,11 +308,12 @@ None. The operator limited this PRD to the MVP.
 
 The operator set these limits on 2026-11-14. A call and a transaction are one submitted question.
 
-- The MVP supports 200 submitted questions in a day.
+- The MVP supports 200 submitted questions in a day as a planning number.
+- A 201st submitted question in that day is processed the same as questions 1–200. The product logs that the day exceeded 200. The customer does not see a capacity refusal. [Operator decision 2026-11-17]
 - Latency, and the response time for this MVP, is under 5 seconds from submit until the customer can see the supported answer, the waiting state, or the technical-issue notice. Representative review is outside that interval.
 - The model or provider cost recorded for that question is at most 20 cents. The product records that cost.
 
-No concurrency number and no uptime number are set. No throughput number is set beyond the 200 questions in a day. What the product does with a 201st question in a day is unresolved. [Operator decision 2026-11-14; MRD §4]
+No concurrency number and no uptime number are set. No throughput number is set beyond the 200 questions in a day. [Operator decisions 2026-11-14 and 2026-11-17; MRD §4]
 
 **Security & Compliance**
 
@@ -312,7 +325,7 @@ No concurrency number and no uptime number are set. No throughput number is set 
 
 **Scalability & Reliability**
 
-Scaling triggers, recovery-time objectives, and fault-tolerance procedures are not sourced. They are deferred with P2. The MVP reliability bar is FR-10 plus FR-11: the supported result, each escalation condition alone, one question with two escalation reasons, the three written-request labels, and one technical failure behave as specified on the fixtures. Daily capacity is the 200 questions in MC-01.
+Scaling triggers, recovery-time objectives, and fault-tolerance procedures are not sourced. They are deferred with P2. The MVP reliability bar is FR-10 plus FR-11 plus FR-12: the supported result, each escalation condition alone, one question with two escalation reasons, the three written-request labels, one technical failure, and one 201st-question case behave as specified on the fixtures. Daily volume is the 200-question planning number in MC-01, with the 201st processed and logged under FR-12.
 
 ## 6. User Experience Design
 
@@ -323,7 +336,7 @@ The MVP has two roles and one customer success path.
 - The customer can submit natural language and, on the happy path, read the answer and its source references.
 - On an escalation, the customer sees the waiting state in FR-08 and does not see the draft as the answer.
 - On a technical failure, the customer sees the sentence in FR-11, the error is logged, and no approval item is created.
-- The representative can open the one approval item, read the question and the draft, and record approval. After that approval, the customer receives that same draft and its source references.
+- The representative can open the one approval item, read the question and the draft, and record approval. After that approval, the customer receives that same draft and its source references. The representative who records approval is the sender.
 
 Channel, screen layout, visual design, and a disability-access standard are not decided. `@ux.designer` owns them if a surface is in scope. This PRD does not name a UI library or a device size. [MRD §3 Implications]
 
@@ -342,7 +355,7 @@ No business target is set. The CFPB counts and the J.D. Power score stay context
 
 **Technical Metrics**
 
-The MVP succeeds when FR-10 and FR-11 pass and each question meets MC-01. No accuracy percentage is set. A draft’s fee, rate, account status, policy, and loan-fact claims must appear in a cited approved article. That check is MP-03.
+The MVP succeeds when FR-10, FR-11, and FR-12 pass and each question meets MC-01. No accuracy percentage is set. A draft’s fee, rate, account status, policy, and loan-fact claims must appear in a cited approved article. That check is MP-03.
 
 **User Experience Metrics**
 
@@ -353,7 +366,7 @@ No satisfaction score and no readability score are set. “Easy to understand”
 **Development Phases**
 
 - Phase 1, Define: this PRD is the requirements artifact. User stories are in `project-context/1.define/user-stories/`. The SAD is next and is owned by `@system.arch`.
-- Phase 2, Build: setup, then frontend and backend, then integration, then QA, against FR-01 through FR-11.
+- Phase 2, Build: setup, then frontend and backend, then integration, then QA, against FR-01 through FR-12.
 - Phase 3, Deliver: deploy configuration and runbook after the build artifacts exist. This PRD does not authorize a live deploy.
 
 **Resource Requirements**
@@ -376,7 +389,7 @@ N/A. This is a six-week capstone on mocked data. It does not pick a commercial s
 
 ## Quality Assurance Checklist
 
-- [x] Requirements traceable to the MRD, to the operator `*create-prd` instruction, or to the operator decisions of 2026-11-14. The system description is absent and is not used as a source.
+- [x] Requirements traceable to the MRD, to the operator `*create-prd` instruction, or to the operator decisions of 2026-11-14 and 2026-11-17. The system description is absent and is not used as a source.
 - [x] Technical constraints are stated without a runtime, a pattern, or a roster. The SAD owns those choices.
 - [x] Success metrics match the fixture tests and the operator limits of 200 questions a day, under 5 seconds, and at most 20 cents per question. Unsourced business outcomes are not targets.
 - [x] MVP scope is P0. P1 is empty. P2 lists deferred work.
@@ -386,7 +399,8 @@ N/A. This is a six-week capstone on mocked data. It does not pick a commercial s
 
 - `project-context/1.define/mrd.md`, including its Context, Executive Summary, §§1–5, Claims We Will Not Make, Assumptions, and Open Questions.
 - Operator instruction for `*create-prd`, 2026-11-13: MVP only; one user-facing happy path; one human approval gate; mock every external system; testable acceptance criteria; trace to the MRD or the system description; leave pattern, runtime, and agent roster to the SAD; unsourced numbers go to Open Questions.
-- Operator decisions, 2026-11-14: accept the customer-specific fact list; the fixture approved mark; conflict escalates as cannot be determined to be safe; a notice of error, a qualified written request, or a request for information escalates as customer-specific; a fee, rate, account status, policy, or loan-fact claim must appear in a cited approved article; no readability test; fixtures are synthetic; who may send in a live operation stays deferred; 200 calls a day, latency under 5 seconds, and at most 20 cents per transaction; no separate concurrency or uptime number; log the error and show “We are facing a technical issue at this point. Check back later.”; drafting may call a model.
+- Operator decisions, 2026-11-14: accept the customer-specific fact list; the fixture approved mark; conflict escalates as cannot be determined to be safe; a notice of error, a qualified written request, or a request for information escalates as customer-specific; a fee, rate, account status, policy, or loan-fact claim must appear in a cited approved article; no readability test; fixtures are synthetic; 200 calls a day, latency under 5 seconds, and at most 20 cents per transaction; no separate concurrency or uptime number; log the error and show “We are facing a technical issue at this point. Check back later.”; drafting may call a model.
+- Operator decisions, 2026-11-17: the representative who records approval is the sender, including in a later live operation; a 201st question in a day is processed the same as questions 1–200, and the product logs that the day exceeded 200.
 - `aamad.config.yml`: `project.mode` is `greenfield`. The file also contains `runtime.target`. That value is not a requirement of this PRD.
 - System description: not present at `project-context/1.define/system-description.md`.
 
@@ -394,11 +408,11 @@ N/A. This is a six-week capstone on mocked data. It does not pick a commercial s
 
 - The MRD is the product scope for users, the five steps, the three escalation conditions, direct delivery of a supported answer, mocked data, and the claims this product will not make.
 - “One human approval gate” means the representative’s review of an escalation. It does not add a review of supported answers. The earlier MRD decision that a supported answer is delivered directly remains in force.
-- For the MVP, the representative’s approval delivers that same draft and its source references to the customer. This does not decide who may send in a future live servicer.
+- The representative who records approval is the sender. After that approval, the product delivers that same draft and its source references to the customer. That rule holds for this MVP and for a later live operation.
 - The customer-visible waiting state in FR-08 is required so the escalation path can be tested. The words and layout of that waiting state are not specified. The technical-issue sentence is specified in FR-11.
 - The expected result is the tester’s answer key. It may list more than one escalation reason. It is not given to the product. The product receives the question and the approved-article library and searches that library. The MVP meanings of customer-specific, approved, and a matching claim are the operator decisions of 2026-11-14.
 - “At least one” fixture per outcome is the smallest set that makes FR-10 and FR-11 observable. It is not the daily capacity of 200 questions.
-- A call and a transaction are one submitted question. The 20 cents is the model or provider charge recorded for that question. Representative labor is outside it. The under-5-second interval ends when the customer can see the supported answer, the waiting state, or the technical-issue notice. Representative review time is outside it.
+- A call and a transaction are one submitted question. The 20 cents is the model or provider charge recorded for that question. Representative labor is outside it. The under-5-second interval ends when the customer can see the supported answer, the waiting state, or the technical-issue notice. Representative review time is outside it. The 200 questions in a day are a planning number, not a hard cap. A test of FR-12 may set the recorded daily count to 200 instead of submitting 200 questions.
 - The MRD file still lists the closed questions as open. It is the research snapshot. This PRD records the later operator decisions.
 - “Easy to understand” stays intent. No readability score was added.
 - The six-week cohort is a scope constraint from the MRD, not a delivery estimate.
@@ -409,17 +423,16 @@ N/A. This is a six-week capstone on mocked data. It does not pick a commercial s
 
 Closed by the operator on 2026-11-14: the customer-specific fact list, the fixture approval mark, a conflict between approved articles, escalation of a notice of error, a qualified written request, or a request for information, the claim-in-article check, no readability test, synthetic fixtures, the technical-issue notice, the model-provider rule, and the limits of 200 questions a day, under 5 seconds, and at most 20 cents per question. No concurrency number and no uptime number were added.
 
-Still unresolved:
+Closed by the operator on 2026-11-17: the representative who records approval is the sender, including in a later live operation; a 201st question in a day is processed the same as questions 1–200, and the product logs that the day exceeded 200.
 
-- After this MVP, in a live operation, who may send the response once the representative has approved it?
-- What should the product do when more than 200 questions are submitted in a day?
+Still unresolved: none.
 
 ## Audit
 
-- Timestamp: 2026-11-14T13:56:00-05:00
+- Timestamp: 2026-11-17T08:15:00-05:00
 - Persona id: `product-mgr`
-- Action: `create-prd` (revision: operator decisions of 2026-11-14 close the open questions listed above and set MC-01, MP-03, MD-06, MD-07, MD-08, and FR-11)
-- Prior revision: 2026-11-14T11:15:00-05:00, the product records every escalation reason that applies. 2026-11-14T11:10:00-05:00, the risk table claims only the source-note check. 2026-11-14T10:59:00-05:00, after approval the customer receives that same draft. 2026-11-14T10:46:00-05:00, expected fixture result is hidden from the product. Original write: 2026-11-13T22:44:29-05:00, action `create-prd`.
+- Action: `create-prd` (revision: operator decisions of 2026-11-17 close who may send after approval and the 201st-question rule, and set MD-09 and FR-12)
+- Prior revision: 2026-11-14T13:56:00-05:00, operator decisions of 2026-11-14 close the open questions listed above and set MC-01, MP-03, MD-06, MD-07, MD-08, and FR-11. 2026-11-14T11:15:00-05:00, the product records every escalation reason that applies. 2026-11-14T11:10:00-05:00, the risk table claims only the source-note check. 2026-11-14T10:59:00-05:00, after approval the customer receives that same draft. 2026-11-14T10:46:00-05:00, expected fixture result is hidden from the product. Original write: 2026-11-13T22:44:29-05:00, action `create-prd`.
 - Resolved runtime: not recorded. Pattern, runtime, and agent roster are left to the SAD. `runtime.target` in `aamad.config.yml` is not a requirement of this document. `AAMAD_TARGET_RUNTIME` was not applied.
 - Prompt trace: omitted. This artifact is Define-phase requirements traced to the MRD and the operator decisions. It is not a production model response and it does not select an application pattern.
 - Scope honored: MVP only; one customer happy path; one human approval gate; systems of record mocked; drafting may call a model; operator-sourced limits only; no SAD; no application code.
